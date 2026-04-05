@@ -13,8 +13,9 @@ import BottomNav from '@/components/layout/BottomNav';
  *   z-400   Leaflet default controls
  *   z-1     Map tiles / canvas
  *
- * Dengan Header & BottomNav menggunakan z-index 2000, mereka selalu
- * di atas Leaflet canvas bahkan jika Leaflet membuat stacking context baru.
+ * overflow:hidden pada <main> mencegah map (position:absolute) dari
+ * membuat scrollbar di level page. Halaman yang butuh scroll harus
+ * menggunakan overflow-y:auto di container mereka sendiri.
  */
 export default function AppShell({ children }: { children: React.ReactNode }) {
   return (
@@ -22,13 +23,14 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       {/* Header — always on top */}
       <Header />
 
-      {/* Main content area — starts below header */}
+      {/* Main content area — starts below header, clips overflow */}
       <main
         style={{
           position: 'relative',
           marginTop: '56px',        /* header height */
-          paddingBottom: '100px',   /* space for floating bottom nav */
-          minHeight: 'calc(100dvh - 56px)',
+          paddingBottom: '0px',     /* pages manage their own bottom spacing */
+          height: 'calc(100dvh - 56px)',
+          overflow: 'hidden',       /* prevent map from creating page scrollbar */
           display: 'flex',
           flexDirection: 'column',
         }}
@@ -41,3 +43,4 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     </>
   );
 }
+

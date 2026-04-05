@@ -93,7 +93,7 @@ export default function AdminUsersPage() {
   }
 
   return (
-    <div style={{ minHeight: '100dvh', background: 'var(--bg-primary)' }}>
+    <div className="page-scroll" style={{ paddingBottom: '100px' }}>
       {/* Header */}
       <div style={{
         padding: '1rem', background: 'var(--bg-card)',

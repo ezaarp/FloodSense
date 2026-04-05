@@ -106,7 +106,7 @@ export default function AdminPage() {
   ];
 
   return (
-    <div style={{ minHeight: '100dvh', background: 'var(--bg-primary)', paddingBottom: '100px' }}>
+    <div className="page-scroll" style={{ paddingBottom: '100px' }}>
       {/* Hero Header */}
       <div style={{
         padding: '1.5rem 1rem 1rem',

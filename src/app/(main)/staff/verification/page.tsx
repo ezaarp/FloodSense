@@ -161,7 +161,7 @@ export default function StaffVerificationPage() {
   }
 
   return (
-    <div style={{ minHeight: '100dvh', background: 'var(--bg-primary)', paddingBottom: '100px' }}>
+    <div className="page-scroll" style={{ paddingBottom: '100px' }}>
 
       {/* ── Sticky Header ─────────────────────────────── */}
       <div style={{

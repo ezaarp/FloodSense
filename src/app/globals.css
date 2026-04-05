@@ -83,6 +83,7 @@ body {
   color: var(--text-primary);
   min-height: 100dvh;
   overflow-x: hidden;
+  overflow-y: hidden; /* prevent page-level scrollbar; each page manages its own scroll */
 }
 
 /* ---- Scrollbar ---- */
@@ -108,6 +109,28 @@ body {
 }
 
 /* ---- Utility Classes ---- */
+
+/**
+ * .page-scroll — untuk halaman yang memiliki konten panjang (Laporan, Profil, dll).
+ * Scroll dikelola di dalam container ini, bukan di level body/main.
+ */
+.page-scroll {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--bg-primary);
+}
+
+/**
+ * .page-fill — untuk halaman full-height (Peta).
+ * Tidak ada scroll, konten mengisi area penuh.
+ */
+.page-fill {
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-primary);
+}
+
 .glass {
   background: rgba(30, 41, 59, 0.8);
   backdrop-filter: blur(12px);

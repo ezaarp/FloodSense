@@ -261,7 +261,7 @@ export default function DashboardPage() {
 
   /* ---------- Render ---------- */
   return (
-    <div style={{ minHeight: '100dvh', background: 'var(--bg-primary)' }}>
+    <div style={{ height: '100%', overflowY: 'auto', overflowX: 'hidden', background: 'var(--bg-primary)' }}>
 
       {/* ── HEADER ── */}
       <div
