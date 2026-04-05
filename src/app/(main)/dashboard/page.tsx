@@ -264,42 +264,45 @@ export default function DashboardPage() {
     <div style={{ minHeight: '100dvh', background: 'var(--bg-primary)' }}>
 
       {/* ── HEADER ── */}
-      <div style={{
-        background: 'var(--bg-card)',
-        borderBottom: '1px solid var(--border-primary)',
-        padding: '1rem 1.25rem',
-        position: 'sticky', top: '56px', zIndex: 100,
-      }}>
+      <div
+        className="dashboard-header"
+        style={{
+          background: 'var(--bg-card)',
+          borderBottom: '1px solid var(--border-primary)',
+          padding: '0.875rem 1.25rem',
+        }}
+      >
         <div style={{
           maxWidth: '1200px', margin: '0 auto',
-          display: 'flex', alignItems: 'center', gap: '0.75rem',
+          display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
         }}>
-          <LayoutDashboard size={20} color="var(--primary-400)" />
-          <div style={{ flex: 1 }}>
+          <LayoutDashboard size={20} color="var(--primary-400)" style={{ marginTop: '2px', flexShrink: 0 }} />
+          <div style={{ flex: 1, minWidth: 0 }}>
             <h1 style={{ fontSize: '1.125rem', fontWeight: 700, lineHeight: 1.2 }}>
               Dashboard Analitik
             </h1>
-            <p style={{ fontSize: '0.6875rem', color: 'var(--text-muted)' }}>
+            <p style={{ fontSize: '0.6875rem', color: 'var(--text-muted)', marginTop: '2px' }}>
               {['staf', 'admin'].includes(role || '') ? 'Staff Overview' : 'Top Level Management View'}
             </p>
           </div>
 
           {/* Actions */}
-          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexShrink: 0 }}>
             {/* Compare button */}
             <button
               onClick={() => setShowComparison(!showComparison)}
               style={{
                 display: 'flex', alignItems: 'center', gap: '0.375rem',
-                padding: '6px 12px', borderRadius: 'var(--radius-md)',
+                padding: '6px 10px', borderRadius: 'var(--radius-md)',
                 background: showComparison ? 'rgba(59,130,246,0.15)' : 'var(--bg-secondary)',
                 border: showComparison ? '1px solid rgba(59,130,246,0.5)' : '1px solid var(--border-primary)',
                 cursor: 'pointer', fontSize: '0.75rem',
                 color: showComparison ? 'var(--primary-400)' : 'var(--text-secondary)',
+                whiteSpace: 'nowrap',
               }}
             >
               <GitCompareArrows size={13} />
-              <span style={{ display: 'none' }} className="desktop-inline">Bandingkan</span>
+              <span className="desktop-inline" style={{ display: 'none' }}>Bandingkan</span>
             </button>
 
             {/* Export dropdown */}
@@ -309,11 +312,11 @@ export default function DashboardPage() {
                 disabled={exporting}
                 style={{
                   display: 'flex', alignItems: 'center', gap: '0.375rem',
-                  padding: '6px 12px', borderRadius: 'var(--radius-md)',
+                  padding: '6px 10px', borderRadius: 'var(--radius-md)',
                   background: 'var(--bg-secondary)', border: '1px solid var(--border-primary)',
                   cursor: exporting ? 'not-allowed' : 'pointer',
                   fontSize: '0.75rem', color: 'var(--text-secondary)',
-                  opacity: exporting ? 0.6 : 1,
+                  opacity: exporting ? 0.6 : 1, whiteSpace: 'nowrap',
                 }}
               >
                 {exporting ? <WaveLoader size={14} /> : <Download size={13} />}
@@ -454,15 +457,31 @@ export default function DashboardPage() {
 
       {/* Responsive override for mobile */}
       <style>{`
+        @media (min-width: 769px) {
+          .dashboard-header {
+            position: sticky;
+            top: 56px;
+            z-index: 100;
+          }
+          aside > div {
+            position: sticky !important;
+            top: 120px !important;
+          }
+          .desktop-inline {
+            display: inline !important;
+          }
+        }
         @media (max-width: 768px) {
           .dashboard-grid {
             grid-template-columns: 1fr !important;
           }
+          .dashboard-header {
+            position: relative;
+            top: auto;
+            z-index: auto;
+          }
           aside > div {
             position: static !important;
-          }
-          .desktop-inline {
-            display: inline !important;
           }
         }
         @keyframes spin {

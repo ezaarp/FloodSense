@@ -68,7 +68,7 @@ export default function ReportsPage() {
   });
 
   return (
-    <div style={{ padding: '1rem', maxWidth: '640px', margin: '0 auto' }}>
+    <div style={{ padding: '1rem', maxWidth: '640px', margin: '0 auto', paddingBottom: '1.5rem', boxSizing: 'border-box', width: '100%' }}>
       <h1 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1rem' }}>Laporan Banjir</h1>
 
       {/* Search & Filter */}
@@ -114,10 +114,11 @@ export default function ReportsPage() {
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
           {filtered.map((report) => (
-            <Link key={report.id} href={`/report/${report.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Link key={report.id} href={`/report/${report.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>
               <div className="card" style={{
                 display: 'flex', alignItems: 'center', gap: '0.75rem',
-                padding: '1rem', cursor: 'pointer',
+                padding: '0.875rem 1rem', cursor: 'pointer',
+                overflow: 'hidden', width: '100%', boxSizing: 'border-box',
               }}>
                 <div style={{
                   width: '40px', height: '40px', borderRadius: 'var(--radius-md)',
@@ -126,12 +127,12 @@ export default function ReportsPage() {
                 }}>
                   <Droplets size={18} color={`var(--severity-${report.severity === 'sangat_berat' ? 'sangat-berat' : report.severity})`} />
                 </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
-                    <span className={`badge badge-severity-${report.severity}`}>
+                <div style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', marginBottom: '0.25rem', flexWrap: 'nowrap', overflow: 'hidden' }}>
+                    <span className={`badge badge-severity-${report.severity}`} style={{ flexShrink: 0 }}>
                       {SEVERITY_LABELS[report.severity]}
                     </span>
-                    <span className={`badge badge-status-${report.status}`}>
+                    <span className={`badge badge-status-${report.status}`} style={{ flexShrink: 0 }}>
                       {STATUS_LABELS[report.status]}
                     </span>
                   </div>
@@ -139,25 +140,26 @@ export default function ReportsPage() {
                     <p style={{
                       fontSize: '0.8125rem', color: 'var(--text-secondary)',
                       whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                      maxWidth: '100%',
                     }}>
                       {report.description}
                     </p>
                   )}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '0.375rem' }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.6875rem', color: 'var(--text-muted)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '0.25rem' }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.6875rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
                       <Clock size={10} />
                       {new Date(report.created_at).toLocaleString('id-ID', {
                         day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
                       })}
                     </span>
                     {report.water_height_cm && (
-                      <span style={{ fontSize: '0.6875rem', color: 'var(--text-muted)' }}>
+                      <span style={{ fontSize: '0.6875rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
                         {report.water_height_cm} cm
                       </span>
                     )}
                   </div>
                 </div>
-                <ChevronRight size={16} color="var(--text-muted)" />
+                <ChevronRight size={16} color="var(--text-muted)" style={{ flexShrink: 0 }} />
               </div>
             </Link>
           ))}

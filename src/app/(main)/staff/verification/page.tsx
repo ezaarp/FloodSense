@@ -550,6 +550,7 @@ function ReportDetailPanel({ report, onClose, onAction }: {
           background: 'var(--bg-card)',
           borderTop: '1px solid rgba(255,255,255,0.08)',
           borderRadius: '20px 20px 0 0',
+          WebkitOverflowScrolling: 'touch',
         }}
       >
         {/* Grab handle */}
@@ -560,7 +561,7 @@ function ReportDetailPanel({ report, onClose, onAction }: {
           </button>
         </div>
 
-        <div style={{ padding: '0.875rem 1.25rem 2rem' }}>
+        <div style={{ padding: '0.875rem 1.25rem 5.5rem' }}>
           {/* Flagged banner */}
           {report.status === 'flagged' && (
             <div style={{
