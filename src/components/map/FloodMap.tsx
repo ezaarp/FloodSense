@@ -11,7 +11,7 @@ import ClusterLayer from './ClusterLayer';
 import LayerControl from './LayerControl';
 import type { MapReport, SeverityLevel } from '@/types/database';
 import { SEVERITY_LABELS } from '@/types/database';
-import { Navigation, AlertTriangle, Droplets, Loader2 } from 'lucide-react';
+import { Navigation, AlertTriangle, Droplets, Loader2, Info } from 'lucide-react';
 import VoteButtons from '@/components/reports/VoteButtons';
 import Link from 'next/link';
 
@@ -182,18 +182,18 @@ function LocateButton({ userLocation, onLocate }: { userLocation: UserLocation |
       onClick={handleLocate}
       title="Lokasi saya"
       style={{
-        position: 'absolute', bottom: '80px', right: '16px', zIndex: 1000,
-        width: '44px', height: '44px', borderRadius: 'var(--radius-md)',
-        background: locating ? 'rgba(59,130,246,0.15)' : 'var(--bg-card)',
-        border: `1px solid ${locating ? 'var(--primary-500)' : 'var(--border-primary)'}`,
+        position: 'absolute', bottom: '108px', right: '16px', zIndex: 1000,
+        width: '44px', height: '44px', borderRadius: '50%',
+        background: locating ? 'rgba(59,130,246,0.7)' : '#3b82f6',
+        border: '3px solid rgba(255,255,255,0.9)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        cursor: 'pointer', boxShadow: 'var(--shadow-md)',
+        cursor: 'pointer', boxShadow: '0 2px 12px rgba(59,130,246,0.5)',
         transition: 'all var(--transition-fast)',
       }}
     >
       {locating
-        ? <Loader2 size={18} color="var(--primary-400)" className="animate-spin" />
-        : <Navigation size={18} color="var(--primary-400)" />
+        ? <Loader2 size={18} color="white" className="animate-spin" />
+        : <Navigation size={18} color="white" />
       }
     </button>
   );
@@ -311,6 +311,7 @@ export default function FloodMap() {
   } = useMapStore();
 
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
+  const [showLegend, setShowLegend] = useState(false);
 
   // Auto-watch position on mount (silent — only shows if user already granted permission)
   useEffect(() => {
@@ -387,30 +388,55 @@ export default function FloodMap() {
         onChange={setLayerPreferences}
       />
 
-      {/* Legend */}
-      <div className="glass" style={{
-        position: 'absolute', bottom: '80px', left: '16px', zIndex: 1000,
-        padding: '0.75rem', borderRadius: 'var(--radius-md)',
-        display: 'flex', flexDirection: 'column', gap: '0.375rem',
-      }}>
-        <p style={{
-          fontSize: '0.6875rem', fontWeight: 600,
-          color: 'var(--text-secondary)', marginBottom: '0.125rem',
+      {/* Info Button (toggle legend) */}
+      <button
+        onClick={() => setShowLegend((v) => !v)}
+        title="Level Banjir"
+        style={{
+          position: 'absolute', bottom: '164px', right: '16px', zIndex: 1000,
+          width: '44px', height: '44px', borderRadius: '50%',
+          background: showLegend ? 'var(--primary-500)' : 'var(--bg-card)',
+          border: `1px solid ${showLegend ? 'var(--primary-400)' : 'var(--border-primary)'}`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer', boxShadow: 'var(--shadow-md)',
+          transition: 'all var(--transition-fast)',
+        }}
+      >
+        <Info size={20} color={showLegend ? 'white' : 'var(--text-secondary)'} />
+      </button>
+
+      {/* Legend Popup — appears above info button when open */}
+      {showLegend && (
+        <div className="glass" style={{
+          position: 'absolute', bottom: '220px', right: '16px', zIndex: 1000,
+          padding: '0.875rem', borderRadius: 'var(--radius-md)',
+          display: 'flex', flexDirection: 'column', gap: '0.5rem',
+          minWidth: '150px',
+          boxShadow: 'var(--shadow-lg)',
+          animation: 'fadeInUp 0.15s ease-out',
         }}>
-          Level Banjir
-        </p>
-        {(['ringan', 'sedang', 'berat', 'sangat_berat'] as SeverityLevel[]).map((sev) => (
-          <div key={sev} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <div style={{
-              width: '10px', height: '10px', borderRadius: '50%',
-              background: SEVERITY_COLORS[sev],
-            }} />
-            <span style={{ fontSize: '0.6875rem', color: 'var(--text-secondary)' }}>
-              {SEVERITY_LABELS[sev]}
-            </span>
-          </div>
-        ))}
-      </div>
+          <p style={{
+            fontSize: '0.6875rem', fontWeight: 700,
+            color: 'var(--text-primary)', marginBottom: '0.125rem',
+            letterSpacing: '0.03em', textTransform: 'uppercase',
+          }}>
+            Level Banjir
+          </p>
+          {(['ringan', 'sedang', 'berat', 'sangat_berat'] as SeverityLevel[]).map((sev) => (
+            <div key={sev} style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+              <div style={{
+                width: '12px', height: '12px', borderRadius: '50%',
+                background: SEVERITY_COLORS[sev],
+                flexShrink: 0,
+                boxShadow: `0 0 6px ${SEVERITY_COLORS[sev]}80`,
+              }} />
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
+                {SEVERITY_LABELS[sev]}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Report Count */}
       <div className="glass" style={{
