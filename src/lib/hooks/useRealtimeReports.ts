@@ -64,22 +64,20 @@ export function useRealtimeReports() {
       return;
     }
 
-    if (data) {
-      const mapped: MapReport[] = (data as RpcRow[]).map((r) => ({
-        id: r.id,
-        lat: r.lat,
-        lng: r.lng,
-        severity: r.severity,
-        status: r.status,
-        water_height_cm: r.water_height_cm,
-        created_at: r.created_at,
-        description: r.description,
-        photo_url: r.photo_url ?? null,
-        region_id: r.region_id,
-      }));
-      console.debug('[useRealtimeReports] loaded', mapped.length, 'reports', mapped.slice(0, 3));
-      setReports(mapped);
-    }
+    const mapped: MapReport[] = (data as RpcRow[] | null ?? []).map((r) => ({
+      id: r.id,
+      lat: r.lat,
+      lng: r.lng,
+      severity: r.severity,
+      status: r.status,
+      water_height_cm: r.water_height_cm,
+      created_at: r.created_at,
+      description: r.description,
+      photo_url: r.photo_url ?? null,
+      region_id: r.region_id,
+    }));
+    console.debug('[useRealtimeReports] loaded', mapped.length, 'reports', mapped.slice(0, 3));
+    setReports(mapped);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeFilters]);
 
@@ -113,25 +111,23 @@ export function useRealtimeReports() {
     const { data, error } = await query;
     if (error) { console.error('[useRealtimeReports] fallback error:', error); setLoading(false); return; }
 
-    if (data) {
-      const mapped: MapReport[] = (data as FallbackRow[]).map((r) => {
-        const { lat, lng } = parseLocation(r.location);
-        return {
-          id: r.id,
-          lat,
-          lng,
-          severity: r.severity,
-          status: r.status,
-          water_height_cm: r.water_height_cm,
-          created_at: r.created_at,
-          description: r.description,
-          photo_url: null,
-          region_id: r.region_id,
-        };
-      });
-      console.debug('[useRealtimeReports] fallback loaded', mapped.length, 'reports (coords may be 0,0 if WKB)');
-      setReports(mapped);
-    }
+    const mapped: MapReport[] = (data as FallbackRow[] | null ?? []).map((r) => {
+      const { lat, lng } = parseLocation(r.location);
+      return {
+        id: r.id,
+        lat,
+        lng,
+        severity: r.severity,
+        status: r.status,
+        water_height_cm: r.water_height_cm,
+        created_at: r.created_at,
+        description: r.description,
+        photo_url: null,
+        region_id: r.region_id,
+      };
+    });
+    console.debug('[useRealtimeReports] fallback loaded', mapped.length, 'reports (coords may be 0,0 if WKB)');
+    setReports(mapped);
   }
 
   // Initial fetch
