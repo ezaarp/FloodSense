@@ -46,38 +46,38 @@ export function useRealtimeReports() {
 
   const fetchReports = useCallback(async () => {
     setLoading(true);
+    try {
+      const sinceDate = new Date(Date.now() - TIME_RANGES[activeFilters.timeRange]).toISOString();
 
-    const sinceDate = new Date(Date.now() - TIME_RANGES[activeFilters.timeRange]).toISOString();
+      const { data, error } = await supabase.rpc('get_map_reports', {
+        p_since: sinceDate,
+        p_severity: activeFilters.severity === 'all' ? null : activeFilters.severity,
+        p_status: activeFilters.status === 'all' ? null : activeFilters.status,
+      });
 
-    // Use a raw SQL query via rpc to get ST_AsGeoJSON so coordinates come
-    // back as parsed JSON instead of hex WKB.
-    const { data, error } = await supabase.rpc('get_map_reports', {
-      p_since: sinceDate,
-      p_severity: activeFilters.severity === 'all' ? null : activeFilters.severity,
-      p_status: activeFilters.status === 'all' ? null : activeFilters.status,
-    });
+      if (error) {
+        console.warn('[useRealtimeReports] RPC failed, falling back to direct select:', error.message);
+        await fallbackFetch(sinceDate);
+        return;
+      }
 
-    if (error) {
-      console.warn('[useRealtimeReports] RPC failed, falling back to direct select:', error.message);
-      // ── Fallback: plain select (coordinates may be hex, will show as lat=0 lng=0) ──
-      await fallbackFetch(sinceDate);
-      return;
+      const mapped: MapReport[] = (data as RpcRow[] | null ?? []).map((r) => ({
+        id: r.id,
+        lat: r.lat,
+        lng: r.lng,
+        severity: r.severity,
+        status: r.status,
+        water_height_cm: r.water_height_cm,
+        created_at: r.created_at,
+        description: r.description,
+        photo_url: r.photo_url ?? null,
+        region_id: r.region_id,
+      }));
+      setReports(mapped);
+    } catch (err) {
+      console.error('[useRealtimeReports] unexpected error:', err);
+      setLoading(false);
     }
-
-    const mapped: MapReport[] = (data as RpcRow[] | null ?? []).map((r) => ({
-      id: r.id,
-      lat: r.lat,
-      lng: r.lng,
-      severity: r.severity,
-      status: r.status,
-      water_height_cm: r.water_height_cm,
-      created_at: r.created_at,
-      description: r.description,
-      photo_url: r.photo_url ?? null,
-      region_id: r.region_id,
-    }));
-    console.debug('[useRealtimeReports] loaded', mapped.length, 'reports', mapped.slice(0, 3));
-    setReports(mapped);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeFilters]);
 
